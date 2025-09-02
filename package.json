@@ -1,0 +1,24 @@
+{
+  "name": "env-sentinel",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "bin": {
+    "env-sentinel": "./bin/cli.js",
+    "env-sentinel-lint": "./bin/lint.js",
+    "env-sentinel-generate": "./bin/generate.js"
+
+  },
+ 
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Aaditi Parmar",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^30.1.2"
+  }
+}
