@@ -1,60 +1,158 @@
 #!/usr/bin/env node
 import { loadEnv } from "../src/loader.js";
 import { validateEnv } from "../src/validator.js";
-import path from "path";
-import fs from "fs";
-import { pathToFileURL } from "url";
+import {schema} from "../schema.js";
 
-const args = process.argv.slice(2);
-let mode = "warn";
-if (args.includes("--strict")) mode = "strict";
+const env = loadEnv(".env");
+const validated = validateEnv(env, schema, { mode: "warn" });
 
-// Load schema
-const schemaPath = path.resolve(process.cwd(), "schema.js");
-if (!fs.existsSync(schemaPath)) {
-  console.error("❌ Could not find schema.js in project root.");
-  process.exit(1);
-}
+let errors = 0;
+let warnings = 0;
 
-// Windows-friendly ESM import
-const schemaUrl = pathToFileURL(schemaPath).href;
-const { schema } = await import(schemaUrl);
+console.log("\n📋 ENV Lint Report");
+console.log("─────────────────────────────");
 
-function lintEnv() {
-  const env = loadEnv();
-  if (!env) {
-    console.warn("⚠️ .env file not found");
-    return;
-  }
+for (const key in schema) {
+  const rule = schema[key];
+  const value = validated[key];
 
-  const validated = validateEnv(env, schema, { mode });
+  let status = "✅";
+  let note = value;
 
-  console.log("\n📋 ENV Lint Report");
-  console.log("─────────────────────────────");
-
-  let errors = 0;
-
-  for (const key in schema) {
-    const value = validated[key];
-    const rule = schema[key];
-
-    if (value === undefined || value === null || value === "") {
-      console.log(`${key.padEnd(20)} ❌ missing or invalid (${rule.type})`);
+  if (value === undefined || value === null || value === "") {
+    // Missing values
+    if (rule.required) {
+      status = "❌";
+      note = "missing";
       errors++;
-      if (mode === "strict") process.exit(1);
     } else {
-      console.log(`${key.padEnd(20)} ✅ ${value}`);
+      status = "⚠️";
+      note = "optional missing";
+      warnings++;
+    }
+  } else {
+    // Type-specific validations
+    switch (rule.type) {
+      case "email": {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          if (rule.required) {
+            status = "❌";
+            note = "invalid email";
+            errors++;
+          } else {
+            status = "⚠️";
+            note = "invalid email";
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "url": {
+        try {
+          new URL(value);
+        } catch {
+          if (rule.required) {
+            status = "❌";
+            note = "invalid url";
+            errors++;
+          } else {
+            status = "⚠️";
+            note = "invalid url";
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "enum": {
+        if (!rule.values.includes(value)) {
+          if (rule.required) {
+            status = "❌";
+            note = `invalid (must be one of: ${rule.values.join(", ")})`;
+            errors++;
+          } else {
+            status = "⚠️";
+            note = `invalid (must be one of: ${rule.values.join(", ")})`;
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "number": {
+        if (typeof value !== "number" || isNaN(value)) {
+          if (rule.required) {
+            status = "❌";
+            note = "invalid number";
+            errors++;
+          } else {
+            status = "⚠️";
+            note = "invalid number";
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "boolean": {
+        if (typeof value !== "boolean") {
+          if (rule.required) {
+            status = "❌";
+            note = "invalid boolean (use true/false)";
+            errors++;
+          } else {
+            status = "⚠️";
+            note = "invalid boolean";
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "password": {
+        const strongRegex =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+        if (!strongRegex.test(value)) {
+          if (rule.required) {
+            status = "❌";
+            note =
+              "weak password (min 8 chars, upper+lower+number+special)";
+            errors++;
+          } else {
+            status = "⚠️";
+            note = "weak password";
+            warnings++;
+          }
+        }
+        break;
+      }
+
+      case "string":
+      default:
+        // Strings are always valid
+        break;
     }
   }
 
-  console.log("─────────────────────────────");
-  console.log(`${Object.keys(schema).length} variables checked, ${errors} error(s)\n`);
-
-  if (errors > 0 && mode === "warn") {
-    console.warn("⚠️ Some variables are missing or invalid. Fix them before running the app.");
-  } else if (errors === 0) {
-    console.log("✅ All environment variables are valid!");
-  }
+  console.log(`${key.padEnd(20)} ${status} ${note}`);
 }
 
-lintEnv();
+console.log("─────────────────────────────");
+console.log(
+  `${Object.keys(schema).length} variables checked, ${errors} error(s), ${warnings} warning(s)\n`
+);
+
+if (errors > 0) {
+  console.error(
+    "❌ Some variables are missing or invalid. Fix them before running the app."
+  );
+  process.exit(1);
+} else if (warnings > 0) {
+  console.warn(
+    "⚠️ Some optional variables are missing or invalid, but the app can still run."
+  );
+} else {
+  console.log("✅ All environment variables look good!");
+}

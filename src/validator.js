@@ -67,7 +67,9 @@ export function validateEnv(env, schema, options = { mode: "warn" }) {
 
         case "email":
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
+
+          const trimmedValue = value.trim();  // remove leading/trailing spaces
+          if (!emailRegex.test(trimmedValue)) {
             const msg = `"${key}" should be a valid email address`;
             if (options.mode === "strict") errors.push(msg);
             else console.warn(`⚠️ ENV GUARD: ${msg}`);
