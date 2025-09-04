@@ -2,6 +2,14 @@
   "name": "envsecurepro",
   "version": "1.0.0",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aaditi415/envsecurepro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Aaditi415/envsecurepro/issues"
+  },
+  "homepage": "https://github.com/Aaditi415/envsecurepro#readme",
   "type": "module",
   "bin": {
     "envsecurepro": "./bin/cli.js",

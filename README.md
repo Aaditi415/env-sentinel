@@ -5,8 +5,8 @@
 [![npm downloads](https://img.shields.io/npm/dt/envsecurepro.svg)](https://www.npmjs.com/package/envsecurepro)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Maintenance](https://img.shields.io/maintenance/yes/2025.svg)](#)
-[![GitHub license](https://img.shields.io/github/license/Aaditi415/env-sentinel.svg)](./LICENSE)
-[![GitHub release](https://img.shields.io/github/v/release/Aaditi415/env-sentinel.svg)](https://github.com/Aaditi415/env-sentinel/releases)
+[![GitHub license](https://img.shields.io/github/license/Aaditi415/envsecureprol.svg)](./LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/Aaditi415/envsecureprol.svg)](https://github.com/Aaditi415/envsecureprol/releases)
 
 
 **envsecurepro** is a lightweight, developer-friendly CLI tool for Node.js projects that helps you **validate, guard, and manage environment variables**.  
