@@ -1,12 +1,12 @@
 {
-  "name": "env-sentinel",
+  "name": "envsecurepro",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
   "bin": {
-    "env-sentinel": "./bin/cli.js",
-    "env-sentinel-lint": "./bin/lint.js",
-    "env-sentinel-generate": "./bin/generate.js"
+    "envsecurepro": "./bin/cli.js",
+    "envsecurepro-lint": "./bin/lint.js",
+    "envsecurepro-generate": "./bin/generate.js"
 
   },
  
@@ -14,10 +14,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["env", "lint", "config"],
   "author": "Aaditi Parmar",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
+  "description": "A Node.js CLI tool for managing and validating .env files",
   "devDependencies": {
     "jest": "^30.1.2"
   }

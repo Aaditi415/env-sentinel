@@ -12,7 +12,7 @@ const args = process.argv.slice(2);
 
 if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
   console.log(`
-Usage: env-sentinel <command> [options]
+Usage: envsecurepro <command> [options]
 
 Commands:
   lint       Validate your .env file against schema.js
@@ -31,7 +31,7 @@ if (args.includes("--version") || args.includes("-v")) {
   // Read version from package.json
   const pkg = path.resolve(__dirname, "../package.json");
   const { version } = JSON.parse(fs.readFileSync(pkg, "utf-8"));
-  console.log(`EnvSentinel v${version}`);
+  console.log(`envsecurepro v${version}`);
   process.exit(0);
 }
 
