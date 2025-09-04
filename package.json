@@ -1,6 +1,6 @@
 {
   "name": "envsecurepro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "server.js",
   "repository": {
     "type": "git",
@@ -15,14 +15,15 @@
     "envsecurepro": "./bin/cli.js",
     "envsecurepro-lint": "./bin/lint.js",
     "envsecurepro-generate": "./bin/generate.js"
-
   },
- 
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["env", "lint", "config"],
+  "keywords": [
+    "env",
+    "lint",
+    "config"
+  ],
   "author": "Aaditi Parmar",
   "license": "MIT",
   "description": "A Node.js CLI tool for managing and validating .env files",
